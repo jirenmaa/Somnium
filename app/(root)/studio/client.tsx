@@ -51,14 +51,14 @@ export default function StudioPage({
     try {
       await deleteVideo(bunnyVideoId, thumbnailUrl);
 
-      // // instantly update UI
-      // setVideos((prev) => prev.filter((v) => v.video.videoId !== bunnyVideoId));
+      // instantly update UI
+      setVideos((prev) => prev.filter((v) => v.video.videoId !== bunnyVideoId));
 
-      // // if last item deleted on page, move back safely
-      // setPage((prev) => {
-      //   const newTotal = Math.ceil((videos.length - 1) / PAGE_SIZE);
-      //   return prev > newTotal ? Math.max(newTotal, 1) : prev;
-      // });
+      // if last item deleted on page, move back safely
+      setPage((prev) => {
+        const newTotal = Math.ceil((videos.length - 1) / PAGE_SIZE);
+        return prev > newTotal ? Math.max(newTotal, 1) : prev;
+      });
     } catch (err) {
       console.error("Delete failed:", err);
       alert("Failed to delete video.");

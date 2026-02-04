@@ -244,7 +244,7 @@ export const deleteVideo = withErrorHandling(
     });
 
     // Delete DB Record
-    // await db.delete(videos).where(eq(videos.videoId, videoId));
+    await db.delete(videos).where(eq(videos.videoId, videoId));
 
     return {
       success: true,

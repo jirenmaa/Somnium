@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Full Stack Screen Recording & Video Sharing Platform
 
-## Getting Started
+A modern full-stack application for recording your screen, uploading videos, generating AI transcripts, and sharing content securely with full privacy control.
 
-First, run the development server:
+![Preview](assets/preview.png)
+
+---
+
+## Features
+
+| Feature                | Description |
+|------------------------|-------------|
+| Authentication         | Secure user sign-up and sign-in with Better Auth and Google OAuth. |
+| Screen Recording       | Record your screen directly inside the browser with a seamless experience. |
+| Video Uploading        | Upload videos easily with support for public and private visibility. |
+| AI Transcripts         | Generate automatic transcripts for better accessibility and search. |
+| Privacy Control        | Toggle video access between public and private anytime. |
+| Arcjet Security        | Protect the app with bot detection, rate limiting, and attack prevention. |
+| Share Videos           | Share uploaded videos instantly using unique links. |
+| Modern UI/UX           | Minimal, responsive design built with Tailwind CSS. |
+| Database Integration   | Real-time scalable database management powered by Xata. |
+| Type-Safe Queries      | Reliable and secure database queries using Drizzle ORM. |
+| Cross-Device Ready     | Fully responsive experience across desktop, tablet, and mobile. |
+
+---
+
+## Tech Stack
+
+| Technology    | Official Website |
+|--------------|----------------|
+| Next.js       | https://nextjs.org/ |
+| TypeScript    | https://www.typescriptlang.org/ |
+| Tailwind CSS   | https://tailwindcss.com/ |
+| Better Auth    | https://www.better-auth.com/ |
+| Bunny.net    | https://bunny.net/ |
+| Xata         | https://xata.io/ |
+| Drizzle ORM   | https://orm.drizzle.team/ |
+| Arcjet       | https://arcjet.com/ |
+
+---
+
+### Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/jirenmaa/Somnium
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Copy the content `.env.example` file to `.env` in the root directory
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+# Next.js
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Xata Configuration
+XATA_API_KEY=
+DATABASE_URL_POSTGRES=
 
-## Learn More
+# Google OAuth
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
 
-To learn more about Next.js, take a look at the following resources:
+# Better Auth
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=http://localhost:3000
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Bunny.net
+BUNNY_STORAGE_ACCESS_KEY=
+BUNNY_LIBRARY_ID=
+BUNNY_STREAM_ACCESS_KEY=
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Arcjet
+ARCJET_API_KEY=
+```
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Install dependencies
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm install
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the project.

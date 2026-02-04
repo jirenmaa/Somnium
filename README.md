@@ -32,10 +32,10 @@ A modern full-stack application for recording your screen, uploading videos, gen
 | TypeScript    | https://www.typescriptlang.org/ |
 | Tailwind CSS   | https://tailwindcss.com/ |
 | Better Auth    | https://www.better-auth.com/ |
-| Bunny.net    | https://bunny.net/ |
-| Xata         | https://xata.io/ |
-| Drizzle ORM   | https://orm.drizzle.team/ |
-| Arcjet       | https://arcjet.com/ |
+| Bunny.net  (14 days trial)  | https://bunny.net/ |
+| Xata      (14 days trial)     | https://xata.io/ |
+| Drizzle ORM    | https://orm.drizzle.team/ |
+| Arcjet  (14 days trial)      | https://arcjet.com/ |
 
 ---
 

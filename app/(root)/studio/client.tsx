@@ -31,11 +31,14 @@ export default function StudioPage({
   const [loading, setLoading] = useState(true);
 
   const [page, setPage] = useState(1);
-  const totalPages = Math.ceil(videos.length / PAGE_SIZE);
+  const totalPages = Math.ceil(videos ? videos.length / PAGE_SIZE : 1);
 
   const paginatedVideos = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
-    return videos.slice(start, start + PAGE_SIZE);
+
+    if (videos) {
+      return videos.slice(start, start + PAGE_SIZE);
+    }
   }, [videos, page]);
 
   const toggleSelect = (id: string) => {
@@ -115,7 +118,7 @@ export default function StudioPage({
 
           {/* Rows */}
           <div className="divide-y divide-gray-200">
-            {paginatedVideos.map(({ video }) => (
+            {paginatedVideos && paginatedVideos.map(({ video }) => (
               <div
                 key={video.id}
                 className="grid grid-cols-[60px_2fr_160px_160px_120px_120px] items-center py-4 hover:bg-neutral-50 transition"
@@ -190,12 +193,12 @@ export default function StudioPage({
           </div>
 
           {/* Empty */}
-          {videos.length === 0 && (
+          {videos && videos.length === 0 && (
             <p className="text-neutral-500 text-center py-10">No videos yet.</p>
           )}
 
           {/* Pagination */}
-          {videos.length > PAGE_SIZE && (
+          {videos && videos.length > PAGE_SIZE && (
             <div className="flex items-center justify-between mt-3 mx-4">
               {/* Info */}
               <p className="text-sm text-neutral-500">

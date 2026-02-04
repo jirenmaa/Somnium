@@ -80,8 +80,8 @@ const Page = () => {
             setVideoDuration(duration);
           }
 
-          sessionStorage.removeItem("recordedVideo")
-          URL.revokeObjectURL(url)
+          sessionStorage.removeItem("recordedVideo");
+          URL.revokeObjectURL(url);
         }
       } catch (error) {
         console.error("Error loading recorded video");
@@ -159,71 +159,130 @@ const Page = () => {
   };
 
   return (
-    <div className="wrapper-md upload-page">
-      <h1>Upload a video</h1>
+    <div className="upload-page mx-4 md:mx-20">
       {error && <div className="error-field">{error}</div>}
 
       <form
-        action=""
-        className="rounded-xl border-2 border-dashed border-gray-200 gap-6 w-full flex flex-col px-5 py-7.5"
-        onSubmit={handleSubmit}
-      >
-        <FormField
-          id="title"
-          label="title"
-          value={formData.title}
-          onChange={handleInputChange}
-          placeholder="Enter a clean and concise video title"
-        />
-        <FormField
-          id="description"
-          label="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          as="textarea"
-          placeholder="Describe what this video is about"
-        />
+  onSubmit={handleSubmit}
+  className="
+    grid grid-cols-1 gap-8
+    lg:grid-cols-3
+  "
+>
+  {/* ================= LEFT SIDE ================= */}
+  <div className="lg:col-span-2 flex flex-col gap-8">
+    {/* Video Upload */}
+    <div className="flex flex-col gap-3">
+      <FileInput
+        id="video"
+        label="video file"
+        accept="video/*"
+        file={video.file}
+        previewUrl={video.previewUrl}
+        inputRef={video.inputRef}
+        onChange={video.handleFileChange}
+        onReset={video.resetFile}
+        type="video"
+      />
 
-        <FileInput
-          id="video"
-          label="video"
-          accept="video/*"
-          file={video.file}
-          previewUrl={video.previewUrl}
-          inputRef={video.inputRef}
-          onChange={video.handleFileChange}
-          onReset={video.resetFile}
-          type="video"
-        />
+      <span className="text-sm text-gray-400 text-right">
+        Maximum video upload size: <strong>500 MB</strong>
+      </span>
+    </div>
 
-        <FileInput
-          id="thumbnail"
-          label="thumbnail"
-          accept="image/*"
-          file={thumbnail.file}
-          previewUrl={thumbnail.previewUrl}
-          inputRef={thumbnail.inputRef}
-          onChange={thumbnail.handleFileChange}
-          onReset={thumbnail.resetFile}
-          type="image"
-        />
+    {/* Thumbnail Preview Strip */}
+    <div className="hidden lg:flex flex-col gap-3">
+      <h2 className="text-sm font-medium text-gray-600">
+        Thumbnail Upload
+      </h2>
 
-        <FormField
-          id="visibility"
-          label="visibility"
-          value={formData.visibility}
-          onChange={handleInputChange}
-          as="select"
-          options={[
-            { value: "public", label: "Public" },
-            { value: "private", label: "private" },
-          ]}
-        />
+      {/* Desktop-only preview row */}
+      <div className="flex gap-3 items-center">
+        {/* Real Thumbnail */}
+        <div className="w-28 aspect-video rounded-lg overflow-hidden bg-neutral-200 border border-gray-200 flex items-center justify-center">
+          {thumbnail.previewUrl ? (
+            <img
+              src={thumbnail.previewUrl}
+              alt="Thumbnail preview"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-xs text-gray-400">None</span>
+          )}
+        </div>
 
-        <button type="submit" disabled={isSubmitting} className="submit-button hover:bg-pink-600">
-          {isSubmitting ? "Uploading..." : "Upload Video"}
-        </button>
-      </form>
+        {/* Dummy Placeholders */}
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="w-20 aspect-video rounded-lg border border-gray-200 bg-neutral-100"
+          />
+        ))}
+      </div>
+    </div>
+  </div>
+
+  {/* ================= RIGHT SIDE ================= */}
+  <div className="lg:col-span-1 flex flex-col gap-5">
+    {/* Thumbnail Input */}
+    <div className="flex flex-col gap-1">
+      <FileInput
+        id="thumbnail"
+        label="thumbnail image"
+        accept="image/*"
+        file={thumbnail.file}
+        previewUrl={thumbnail.previewUrl}
+        inputRef={thumbnail.inputRef}
+        onChange={thumbnail.handleFileChange}
+        onReset={thumbnail.resetFile}
+        type="image"
+      />
+
+      <span className="text-sm text-gray-400 text-right">
+        Maximum thumbnail upload size: <strong>10 MB</strong>
+      </span>
+    </div>
+
+    {/* Metadata */}
+    <FormField
+      id="title"
+      label="title"
+      value={formData.title}
+      onChange={handleInputChange}
+      placeholder="Enter a clean and concise video title"
+    />
+
+    <FormField
+      id="description"
+      label="description"
+      value={formData.description}
+      onChange={handleInputChange}
+      as="textarea"
+      placeholder="Describe what this video is about"
+    />
+
+    <FormField
+      id="visibility"
+      label="visibility"
+      value={formData.visibility}
+      onChange={handleInputChange}
+      as="select"
+      options={[
+        { value: "public", label: "Public" },
+        { value: "private", label: "Private" },
+      ]}
+    />
+
+    <button
+      type="submit"
+      disabled={isSubmitting}
+      className="submit-button"
+    >
+      {isSubmitting ? "Uploading..." : "Upload Video"}
+    </button>
+  </div>
+</form>
+
     </div>
   );
 };

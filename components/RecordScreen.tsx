@@ -14,6 +14,8 @@ const RecordScreen = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const {
+    micStatus,
+    toggleMic,
     isRecording,
     recordedBlob,
     recordedVideoUrl,
@@ -22,6 +24,28 @@ const RecordScreen = () => {
     stopRecording,
     resetRecording,
   } = useScreenRecording();
+
+  const micDenied = micStatus.status === "denied";
+  const micOn = micStatus.toggled;
+
+  const micConfig = micDenied
+    ? {
+        icon: ICONS.micDenied,
+        title:
+          "Microphone access is blocked. Enable it in your browser site settings to record voice.",
+        buttonClass: "bg-yellow-500 hover:bg-yellow-600",
+      }
+    : micOn
+      ? {
+          icon: ICONS.micOn,
+          title: "Microphone is enabled",
+          buttonClass: "bg-[var(--tone)] hover:bg-rose-600",
+        }
+      : {
+          icon: ICONS.micOff,
+          title: "Microphone is disabled",
+          buttonClass: "bg-rose-600 hover:bg-[var(--tone)]",
+        };
 
   const closeModal = () => {
     resetRecording();
@@ -97,16 +121,29 @@ const RecordScreen = () => {
 
             <div className="record-box">
               {!isRecording && !recordedVideoUrl && (
-                <button onClick={handleStart} className="record-start hover:bg-pink-600 transition-colors">
+                <button onClick={handleStart} className="record-start">
                   <Image
                     src={ICONS.record}
                     alt="record"
                     width={16}
                     height={16}
                   />
-                  Record
+                  Record Video
                 </button>
               )}
+              <button
+                onClick={toggleMic}
+                className={`w-11 h-11 flex items-center justify-center rounded-full ${micConfig.buttonClass}`}
+              >
+                <Image
+                  src={micConfig.icon}
+                  alt="microphone"
+                  width={24}
+                  height={24}
+                  title={micConfig.title}
+                />
+              </button>
+
               {isRecording && (
                 <button onClick={stopRecording} className="record-stop">
                   <Image
@@ -118,7 +155,6 @@ const RecordScreen = () => {
                   Stop Record
                 </button>
               )}
-
               {recordedVideoUrl && (
                 <>
                   <button onClick={recordAgain} className="record-again">

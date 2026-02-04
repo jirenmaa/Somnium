@@ -18,8 +18,8 @@ const Page = async ({ params, searchParams }: ParamsWithSearch) => {
   return (
     <div className="wrapper page">
       <Header
-        subHeader={user?.email}
-        title={user?.name}
+        subHeader={user?.name}
+        title={`@${user?.name}`}
         userImg={user?.image || "/assets/images/dummy.jpg"}
       />
 

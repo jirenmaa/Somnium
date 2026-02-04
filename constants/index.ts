@@ -9,8 +9,6 @@ export const BUNNY = {
   TRANSCRIPT_URL: "https://vz-1e3d5cef-675.b-cdn.net",
 };
 
-export const emojis = ["😂", "😍", "👍"];
-
 export const filterOptions = [
   "Most Viewed",
   "Most Recent",
@@ -24,6 +22,9 @@ export const ICONS = {
   record: "/assets/icons/record.svg",
   close: "/assets/icons/close.svg",
   upload: "/assets/icons/upload.svg",
+  micOn: "/assets/icons/mic-on.svg",
+  micOff: "/assets/icons/mic-off.svg",
+  micDenied: "/assets/icons/mic-denied.svg",
 };
 
 export const initialVideoState = {

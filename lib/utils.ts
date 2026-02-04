@@ -3,10 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { ilike, sql } from "drizzle-orm";
 import { videos } from "@/drizzle/schema";
 
-import {
-  DEFAULT_VIDEO_CONFIG,
-  DEFAULT_RECORDING_CONFIG,
-} from "@/constants";
+import { DEFAULT_VIDEO_CONFIG, DEFAULT_RECORDING_CONFIG } from "@/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -75,7 +72,8 @@ export const apiFetch = async <T = Record<string, unknown>>(
   };
 
   const response = await fetch(url, requestOptions);
-  console.log("response", url, response, requestOptions);
+
+  console.log("response",response)
 
   if (!response.ok) {
     throw new Error(`API error ${response.text()}`);
@@ -147,26 +145,38 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
-export const getMediaStreams = async (
-  withMic: boolean,
-): Promise<MediaStreams> => {
+export async function getMediaStreams(
+  useMic: boolean,
+  micStatus: "granted" | "denied" = "granted",
+) {
+  // Screen capture (tab/system audio)
   const displayStream = await navigator.mediaDevices.getDisplayMedia({
-    video: DEFAULT_VIDEO_CONFIG,
+    video: true,
     audio: true,
   });
 
   const hasDisplayAudio = displayStream.getAudioTracks().length > 0;
+
   let micStream: MediaStream | null = null;
 
-  if (withMic) {
-    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    micStream
-      .getAudioTracks()
-      .forEach((track: MediaStreamTrack) => (track.enabled = true));
+  // Only request mic if user enabled it and usesr site setting allowed it
+  if (useMic && micStatus == "granted") {
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+    } catch {
+      console.warn("Mic permission denied — recording display audio only.");
+      micStream = null;
+    }
   }
 
-  return { displayStream, micStream, hasDisplayAudio };
-};
+  return {
+    displayStream,
+    micStream,
+    hasDisplayAudio,
+  };
+}
 
 export const createAudioMixer = (
   ctx: AudioContext,
@@ -184,10 +194,10 @@ export const createAudioMixer = (
     source.connect(gain).connect(destination);
   };
 
-  if (hasDisplayAudio) mix(displayStream, 0.7);
-  if (micStream) mix(micStream, 1.5);
+  if (hasDisplayAudio) mix(displayStream, 1.0);
+  if (micStream) mix(micStream, 1.2);
 
-  return destination;
+  return destination.stream.getAudioTracks().length > 0 ? destination : null;
 };
 
 export const setupMediaRecorder = (stream: MediaStream) => {

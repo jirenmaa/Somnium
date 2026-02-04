@@ -227,7 +227,7 @@ export const getVideoProcessingStatus = withErrorHandling(
 );
 
 export const deleteVideo = withErrorHandling(
-  async (videoId: string, videoThumbPath: string) => {
+  async (videoId: string, videoThumbUrl: string) => {
     // Delete Bunny Stream Video
     const streamDeleteUrl = `${VIDEO_STREAM_BASE_URL}/${BUNNY_LIBRARY_ID}/videos/${videoId}`;
     await apiFetch(streamDeleteUrl, {
@@ -236,14 +236,15 @@ export const deleteVideo = withErrorHandling(
     });
 
     // Delete Thumbnail from Bunny Storage
-    await apiFetch(videoThumbPath, {
+    const thumbnailId = videoThumbUrl.split("thumbnails/")[1];
+    await apiFetch(`${THUMBNAIL_STORAGE_BASE_URL}/thumbnails/${thumbnailId}`, {
       method: "DELETE",
       bunnyType: "storage",
       expectJson: false,
     });
 
     // Delete DB Record
-    await db.delete(videos).where(eq(videos.videoId, videoId));
+    // await db.delete(videos).where(eq(videos.videoId, videoId));
 
     return {
       success: true,

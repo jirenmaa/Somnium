@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --tone: #7322FF;
+  --tone-hover: #4E17AD;
 }
 
 @theme inline {
@@ -85,9 +87,6 @@
 }
 
 @layer components {
-  .wrapper {
-  }
-
   .wrapper-md {
     @apply max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8;
   }
@@ -97,7 +96,7 @@
   }
 
   .page {
-    @apply flex flex-col min-h-screen p-8 gap-9;
+    @apply flex flex-col min-h-screen p-4 md:p-8 gap-9;
   }
 
   .overlay {
@@ -113,14 +112,14 @@
     @apply w-full min-h-screen flex flex-col-reverse lg:flex-row justify-between overflow-hidden max-lg:gap-10;
 
     .testimonial {
-      @apply bg-light-100 lg:w-1/2 flex flex-col justify-between lg:h-screen w-full py-10 px-6 lg:pl-10 gap-6;
+      @apply bg-[var(--tone)] lg:w-1/2 flex flex-col justify-between lg:h-screen w-full py-10 px-6 lg:pl-10 gap-6 !text-white;
 
       a {
         @apply flex items-center gap-2.5;
       }
 
       h1 {
-        @apply text-xl font-black text-blue-100 font-satoshi -tracking-[0.5px];
+        @apply text-xl font-black font-satoshi -tracking-[0.5px];
       }
 
       .description {
@@ -134,7 +133,7 @@
           }
 
           p {
-            @apply text-3xl font-semibold text-dark-100 text-center -tracking-[2px];
+            @apply text-3xl font-semibold text-center -tracking-[2px];
           }
 
           article {
@@ -144,11 +143,11 @@
               @apply flex flex-col items-center gap-1;
 
               h2 {
-                @apply text-base font-bold text-dark-100;
+                @apply text-lg font-bold;
               }
 
               p {
-                @apply text-gray-100 font-normal text-sm -tracking-[0.5px];
+                @apply text-white font-normal text-sm -tracking-[0.5px];
               }
             }
           }
@@ -156,7 +155,7 @@
       }
 
       p {
-        @apply text-sm font-medium text-gray-100;
+        @apply text-sm font-medium;
       }
     }
 
@@ -178,7 +177,7 @@
           @apply text-3xl font-bold text-dark-100 text-center -tracking-[2px];
 
           span {
-            @apply text-pink-100;
+            @apply text-[#7322FF];
           }
         }
 
@@ -191,7 +190,7 @@
 
   /* upload page */
   .upload-page {
-    @apply flex flex-col gap-7.5 pt-12.5 pb-20;
+    @apply flex flex-col gap-7.5 py-6;
 
     h1 {
       @apply text-3xl font-bold text-dark-100;
@@ -202,7 +201,7 @@
     }
 
     .submit-button {
-      @apply bg-pink-100 text-white px-4 py-3 rounded-md cursor-pointer text-base font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+      @apply bg-[var(--tone)] hover:bg-[var(--tone-hover)] text-white px-4 py-3 rounded-md cursor-pointer text-base font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
     }
   }
 
@@ -222,7 +221,7 @@
     @apply absolute bg-white shadow-lg rounded flex flex-col w-full z-10 top-12 border border-gray-20;
 
     .list-item {
-      @apply px-3 py-2.5 text-sm font-medium -tracking-[0.8px] relative text-dark-100 cursor-pointer hover:bg-pink-100 hover:text-white transition-colors duration-200 ease-in-out;
+      @apply px-3 py-2.5 text-sm font-medium -tracking-[0.8px] relative text-dark-100 cursor-pointer hover:bg-[var(--tone)] hover:text-white transition-colors duration-200 ease-in-out;
 
       img {
         @apply absolute right-3 top-1/2 -translate-y-1/2;
@@ -235,7 +234,7 @@
     @apply flex flex-col items-center px-4 py-10 gap-6 border-t border-gray-20 w-full;
 
     figure {
-      @apply bg-pink-10 rounded-[20px] flex items-center justify-center size-20;
+      @apply rounded-[20px] flex items-center justify-center size-20;
     }
 
     article {
@@ -260,15 +259,13 @@
     }
 
     figure {
-      @apply border border-gray-20 rounded-lg text-gray-100 py-1.5 px-3.5 flex justify-center items-center w-full h-40 gap-2.5 cursor-pointer;
-
       p {
         @apply text-dark-100 text-base font-medium;
       }
     }
 
-    div {
-      @apply relative w-full h-64 rounded-lg overflow-hidden;
+    /* div {
+      @apply relative w-full rounded-lg overflow-hidden;
 
       video {
         @apply w-full h-full object-contain;
@@ -285,7 +282,7 @@
       p {
         @apply absolute bottom-0 left-0 right-0 bg-dark-100 text-white px-3 py-1 text-sm truncate;
       }
-    }
+    } */
   }
 
   /* form field */
@@ -293,13 +290,13 @@
     @apply flex flex-col gap-2;
 
     label {
-      @apply text-gray-100 text-base font-medium;
+      @apply text-gray-100 text-sm md:text-base font-medium;
     }
 
     input,
     select,
     textarea {
-      @apply border border-gray-20 rounded-lg text-dark-100 placeholder:text-gray-100 py-2.5 px-4.5 focus:outline-pink-100 placeholder:font-medium text-base font-semibold;
+      @apply border border-gray-20 rounded md:rounded-lg text-dark-100 placeholder:text-gray-100 py-2.5 px-2.5 md:px-4.5 focus:outline-[var(--tone)] placeholder:font-medium text-xs sm:text-sm md:text-base font-semibold;
     }
   }
   /* navbar */
@@ -323,31 +320,10 @@
     }
   }
 
-  /* pagination */
-  .pagination {
-    @apply flex justify-between items-center py-5 gap-5 border-t border-gray-20;
-
-    .nav-button {
-      @apply border border-gray-25 rounded-4xl py-2.5 px-5 flex items-center justify-center gap-0.5 text-sm font-semibold text-dark-100;
-    }
-
-    div {
-      @apply flex items-center gap-2;
-
-      span {
-        @apply text-gray-100 px-2;
-      }
-
-      button {
-        @apply w-8 h-8 flex items-center justify-center rounded-full text-gray-100 hover:bg-pink-10;
-      }
-    }
-  }
-
   /* record screen */
   .record {
     .primary-btn {
-      @apply py-2.5 px-5 flex items-center gap-2.5 text-sm font-semibold text-white bg-pink-100 hover:bg-pink-600 transition-colors rounded-4xl;
+      @apply py-2.5 px-5 flex items-center gap-2.5 text-sm font-semibold text-white bg-[var(--tone)] hover:bg-[var(--tone-hover)] transition-colors rounded-4xl;
     }
 
     .dialog {
@@ -358,7 +334,7 @@
       }
 
       .dialog-content {
-        @apply relative bg-white rounded-lg p-6 shadow-lg w-full max-w-lg z-[180];
+        @apply relative bg-white rounded-lg p-6 shadow-lg w-full max-w-3xl z-[180];
 
         figure {
           @apply flex justify-between items-center mb-4;
@@ -397,10 +373,10 @@
         }
 
         .record-box {
-          @apply flex justify-center gap-4 mt-4;
+          @apply flex items-center justify-center gap-4 mt-4;
 
           .record-start {
-            @apply py-2.5 px-6 bg-pink-100 text-white rounded-4xl font-medium flex items-center gap-2;
+            @apply py-2.5 px-6 bg-[var(--tone)] hover:bg-[var(--tone-hover)] text-white rounded-4xl font-medium flex items-center gap-2;
           }
 
           .record-stop {
@@ -412,7 +388,7 @@
           }
 
           .record-upload {
-            @apply py-2.5 px-6 bg-pink-100 text-white rounded-4xl font-medium flex items-center gap-2;
+            @apply py-2.5 px-6 bg-[#7322FF] text-white rounded-4xl font-medium flex items-center gap-2;
 
             img {
               @apply brightness-0 invert;
@@ -464,7 +440,7 @@
         @apply relative max-w-[500px] w-full;
 
         input {
-          @apply border border-gray-20 py-2 pl-8 pr-5 text-dark-100 text-sm font-normal placeholder:text-gray-100 w-full rounded-[18px] focus:outline-pink-100;
+          @apply border border-gray-20 py-2 pl-8 pr-5 text-dark-100 text-sm font-normal placeholder:text-gray-100 w-full rounded-[18px] focus:outline-[var(--tone)];
         }
 
         img {

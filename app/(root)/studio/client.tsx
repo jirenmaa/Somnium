@@ -48,19 +48,17 @@ export default function StudioPage({
   };
 
   const handleDelete = async (bunnyVideoId: string, thumbnailUrl: string) => {
-    // if (!confirm("Delete this video permanently?")) return;
-
     try {
-      const res = await deleteVideo(bunnyVideoId, thumbnailUrl);
+      await deleteVideo(bunnyVideoId, thumbnailUrl);
 
-      // instantly update UI
-      setVideos((prev) => prev.filter((v) => v.video.videoId !== bunnyVideoId));
+      // // instantly update UI
+      // setVideos((prev) => prev.filter((v) => v.video.videoId !== bunnyVideoId));
 
-      // if last item deleted on page, move back safely
-      setPage((prev) => {
-        const newTotal = Math.ceil((videos.length - 1) / PAGE_SIZE);
-        return prev > newTotal ? Math.max(newTotal, 1) : prev;
-      });
+      // // if last item deleted on page, move back safely
+      // setPage((prev) => {
+      //   const newTotal = Math.ceil((videos.length - 1) / PAGE_SIZE);
+      //   return prev > newTotal ? Math.max(newTotal, 1) : prev;
+      // });
     } catch (err) {
       console.error("Delete failed:", err);
       alert("Failed to delete video.");
@@ -118,78 +116,79 @@ export default function StudioPage({
 
           {/* Rows */}
           <div className="divide-y divide-gray-200">
-            {paginatedVideos && paginatedVideos.map(({ video }) => (
-              <div
-                key={video.id}
-                className="grid grid-cols-[60px_2fr_160px_160px_120px_120px] items-center py-4 hover:bg-neutral-50 transition"
-              >
-                {/* Checkbox */}
-                <div className="px-4">
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(video.id)}
-                    onChange={() => toggleSelect(video.id)}
-                    className="w-4 h-4 cursor-pointer"
-                  />
-                </div>
-
-                {/* Video Info */}
-                <div className="flex gap-4 overflow-hidden">
-                  {/* Thumbnail */}
-                  <div className="relative w-40 h-24 rounded-md overflow-hidden bg-neutral-200 shrink-0">
-                    <Image
-                      src={video.thumbnailUrl}
-                      alt="thumb"
-                      fill
-                      className="object-cover"
-                      loading="eager"
+            {paginatedVideos &&
+              paginatedVideos.map(({ video }) => (
+                <div
+                  key={video.id}
+                  className="grid grid-cols-[60px_2fr_160px_160px_120px_120px] items-center py-4 hover:bg-neutral-50 transition"
+                >
+                  {/* Checkbox */}
+                  <div className="px-4">
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(video.id)}
+                      onChange={() => toggleSelect(video.id)}
+                      className="w-4 h-4 cursor-pointer"
                     />
                   </div>
 
-                  {/* Title */}
-                  <div className="overflow-hidden">
-                    <h2 className="font-medium text-sm truncate">
-                      {video.title}
-                    </h2>
-                    <p className="text-xs text-neutral-500 truncate">
-                      ID: {video.id}
-                    </p>
+                  {/* Video Info */}
+                  <div className="flex gap-4 overflow-hidden">
+                    {/* Thumbnail */}
+                    <div className="relative w-40 h-24 rounded-md overflow-hidden bg-neutral-200 shrink-0">
+                      <Image
+                        src={video.thumbnailUrl}
+                        alt="thumb"
+                        fill
+                        className="object-cover"
+                        loading="eager"
+                      />
+                    </div>
+
+                    {/* Title */}
+                    <div className="overflow-hidden">
+                      <h2 className="font-medium text-sm truncate">
+                        {video.title}
+                      </h2>
+                      <p className="text-xs text-neutral-500 truncate">
+                        ID: {video.id}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Visibility */}
+                  <div className="text-sm capitalize">{video.visibility}</div>
+
+                  {/* Date */}
+                  <div className="text-sm">
+                    {new Date(video.createdAt).toLocaleDateString()}
+                  </div>
+
+                  {/* Views */}
+                  <div className="text-sm">{video.views}</div>
+
+                  {/* Delete Action */}
+                  <div className="text-center">
+                    <button
+                      onClick={() =>
+                        handleDelete(video.videoId, video.thumbnailUrl)
+                      }
+                      className="hover:text-red-600 transition"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#c5c5c5"
+                        className="hover:fill-[#ff2e2e] transition-colors"
+                      >
+                        <path d="M267.33-120q-27.5 0-47.08-19.58-19.58-19.59-19.58-47.09V-740h-7.34q-14.16 0-23.75-9.62-9.58-9.61-9.58-23.83 0-14.22 9.58-23.72 9.59-9.5 23.75-9.5H352q0-14.33 9.58-23.83 9.59-9.5 23.75-9.5h189.34q14.16 0 23.75 9.58 9.58 9.59 9.58 23.75h158.67q14.16 0 23.75 9.62 9.58 9.62 9.58 23.83 0 14.22-9.58 23.72-9.59 9.5-23.75 9.5h-7.34v553.33q0 27.5-19.58 47.09Q720.17-120 692.67-120H267.33Zm130.79-150.67q14.21 0 23.71-9.58t9.5-23.75v-319.33q0-14.17-9.61-23.75-9.62-9.59-23.84-9.59-14.21 0-23.71 9.59-9.5 9.58-9.5 23.75V-304q0 14.17 9.61 23.75 9.62 9.58 23.84 9.58Zm164 0q14.21 0 23.71-9.58t9.5-23.75v-319.33q0-14.17-9.61-23.75-9.62-9.59-23.84-9.59-14.21 0-23.71 9.59-9.5 9.58-9.5 23.75V-304q0 14.17 9.61 23.75 9.62 9.58 23.84 9.58Z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
-
-                {/* Visibility */}
-                <div className="text-sm capitalize">{video.visibility}</div>
-
-                {/* Date */}
-                <div className="text-sm">
-                  {new Date(video.createdAt).toLocaleDateString()}
-                </div>
-
-                {/* Views */}
-                <div className="text-sm">{video.views}</div>
-
-                {/* Delete Action */}
-                <div className="text-center">
-                  <button
-                    onClick={() =>
-                      handleDelete(video.videoId, video.thumbnailUrl)
-                    }
-                    className="hover:text-red-600 transition"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 -960 960 960"
-                      width="24px"
-                      fill="#c5c5c5"
-                      className="hover:fill-[#ff2e2e] transition-colors"
-                    >
-                      <path d="M267.33-120q-27.5 0-47.08-19.58-19.58-19.59-19.58-47.09V-740h-7.34q-14.16 0-23.75-9.62-9.58-9.61-9.58-23.83 0-14.22 9.58-23.72 9.59-9.5 23.75-9.5H352q0-14.33 9.58-23.83 9.59-9.5 23.75-9.5h189.34q14.16 0 23.75 9.58 9.58 9.59 9.58 23.75h158.67q14.16 0 23.75 9.62 9.58 9.62 9.58 23.83 0 14.22-9.58 23.72-9.59 9.5-23.75 9.5h-7.34v553.33q0 27.5-19.58 47.09Q720.17-120 692.67-120H267.33Zm130.79-150.67q14.21 0 23.71-9.58t9.5-23.75v-319.33q0-14.17-9.61-23.75-9.62-9.59-23.84-9.59-14.21 0-23.71 9.59-9.5 9.58-9.5 23.75V-304q0 14.17 9.61 23.75 9.62 9.58 23.84 9.58Zm164 0q14.21 0 23.71-9.58t9.5-23.75v-319.33q0-14.17-9.61-23.75-9.62-9.59-23.84-9.59-14.21 0-23.71 9.59-9.5 9.58-9.5 23.75V-304q0 14.17 9.61 23.75 9.62 9.58 23.84 9.58Z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
 
           {/* Empty */}

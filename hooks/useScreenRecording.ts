@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-
 import {
   getMediaStreams,
   createAudioMixer,
@@ -16,8 +15,10 @@ export const useScreenRecording = () => {
     recordedVideoUrl: "",
     recordingDuration: 0,
   });
+  const [micStatus, setMicStatus] = useState({ toggled: false, status: "granted" });
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+
   const streamRef = useRef<ExtendedMediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -32,7 +33,7 @@ export const useScreenRecording = () => {
         audioContextRef.current?.close().catch(console.error);
       }
 
-      audioContextRef.current = null
+      audioContextRef.current = null;
     };
   }, [state.recordedVideoUrl]);
 
@@ -49,12 +50,12 @@ export const useScreenRecording = () => {
     }));
   };
 
-  const startRecording = async (withMic = true) => {
+  const startRecording = async () => {
     try {
       stopRecording();
 
       const { displayStream, micStream, hasDisplayAudio } =
-        await getMediaStreams(withMic);
+        await getMediaStreams(micStatus.toggled, micStatus.status as "granted" | "denied");
       const combinedStream = new MediaStream() as ExtendedMediaStream;
 
       displayStream
@@ -118,8 +119,25 @@ export const useScreenRecording = () => {
     startTimeRef.current = null;
   };
 
+  const toggleMic = async () => {
+    const status = await navigator.permissions.query({ name: "microphone" });
+
+    if (status.state === "denied") {
+      setMicStatus({ toggled: false, status: "denied" });
+      return;
+    }
+
+    setMicStatus({ toggled: !micStatus.toggled, status: "granted" });
+  };
+
+  useEffect(() => {
+    toggleMic();
+  }, []);
+
   return {
     ...state,
+    micStatus,
+    toggleMic,
     startRecording,
     stopRecording,
     resetRecording,

@@ -1,12 +1,17 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 import { toast } from "sonner";
 
 import { STUDIO_PAGE_SIZE } from "@/constants";
-import { updateVideoVisibility, deleteVideos } from "@/actions/videos";
+import {
+  updateVideoVisibility,
+  deleteVideos,
+  getMyVideos,
+  getMyVideosCount,
+} from "@/actions/videos";
 import { formatDate, formatDuration } from "@/lib/utils";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -28,11 +33,15 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import EmptyVideo from "@/components/EmptyVideo";
 
 type Visibility = "public" | "private" | "unlisted";
 
-export default function Client({ userVideos }: { userVideos: VideoItem[] }) {
-  const [videos, setVideos] = useState<VideoItem[]>(userVideos);
+export default function Client() {
+  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [loading, setLoading] = useState(true)
+
   const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(1);
 
@@ -45,12 +54,7 @@ export default function Client({ userVideos }: { userVideos: VideoItem[] }) {
     newValue: Visibility;
   } | null>(null);
 
-  const totalPages = Math.ceil(videos.length / STUDIO_PAGE_SIZE);
-
-  const paginatedVideos = useMemo(() => {
-    const start = (page - 1) * STUDIO_PAGE_SIZE;
-    return videos.slice(start, start + STUDIO_PAGE_SIZE);
-  }, [videos, page]);
+  const totalPages = Math.ceil(total / STUDIO_PAGE_SIZE);
 
   const toggleSelect = (id: string) => {
     setSelected((prev) =>
@@ -60,11 +64,11 @@ export default function Client({ userVideos }: { userVideos: VideoItem[] }) {
 
   const toggleSelectAllCurrentPage = (checked: boolean) => {
     if (checked) {
-      const ids = paginatedVideos.map((v) => v.id);
+      const ids = videos.map((v) => v.id);
       setSelected((prev) => [...new Set([...prev, ...ids])]);
     } else {
       setSelected((prev) =>
-        prev.filter((id) => !paginatedVideos.some((v) => v.id === id)),
+        prev.filter((id) => !videos.some((v) => v.id === id)),
       );
     }
   };
@@ -126,7 +130,45 @@ export default function Client({ userVideos }: { userVideos: VideoItem[] }) {
     }
   };
 
+  useEffect(() => {
+    const fetchMyVideo = async () => {
+      setLoading(true)
+      const result = await getMyVideos(
+        undefined,
+        undefined,
+        page,
+        STUDIO_PAGE_SIZE,
+      );
+      setVideos(result.data as VideoItem[]);
+      setLoading(false)
+    };
+
+    fetchMyVideo();
+  }, [page]);
+
+  useEffect(() => {
+    const fetchMyVideoCount = async () => {
+      const total = await getMyVideosCount();
+      setTotal(total.data.total);
+    };
+
+    fetchMyVideoCount();
+  }, []);
+
   const isDialogOpen = !!confirmDeleteIds || !!pendingVisibility;
+
+  if (loading) {
+    return <p className="m-4 md:mx-0 text-center">Loading...</p>
+  }
+
+  if (!loading && total === 0 && videos.length === 0) {
+    return (
+      <EmptyVideo
+        path="studio"
+        message="You don't have any videos yet. Get started by creating your first video."
+      />
+    );
+  }
 
   return (
     <section className="pt-6 pb-3">
@@ -149,9 +191,9 @@ export default function Client({ userVideos }: { userVideos: VideoItem[] }) {
         <div className="px-4">
           <Checkbox
             checked={
-              paginatedVideos.every((v) => selected.includes(v.id))
+              videos.every((v) => selected.includes(v.id))
                 ? true
-                : paginatedVideos.some((v) => selected.includes(v.id))
+                : videos.some((v) => selected.includes(v.id))
                   ? "indeterminate"
                   : false
             }
@@ -170,10 +212,10 @@ export default function Client({ userVideos }: { userVideos: VideoItem[] }) {
 
       {/* Rows */}
       <div className="divide-y divide-black/10 dark:divide-white/10">
-        {paginatedVideos.map((video) => (
+        {videos.map((video) => (
           <div
             key={video.id}
-            className="overflow-x-scroll lg:overflow-x-hidden grid grid-cols-[60px_minmax(300px,3fr)_minmax(160px,1fr)_minmax(120px,1fr)_minmax(100px,1fr)_minmax(100px,1fr)_100px] items-center py-4 transition hover:bg-black/5 dark:hover:bg-white/5"
+            className="grid grid-cols-[60px_minmax(300px,3fr)_minmax(160px,1fr)_minmax(120px,1fr)_minmax(100px,1fr)_minmax(100px,1fr)_100px] items-center overflow-x-scroll py-4 transition hover:bg-black/5 lg:overflow-x-hidden dark:hover:bg-white/5"
           >
             {/* Checkbox */}
             <div className="px-4">
@@ -254,8 +296,8 @@ export default function Client({ userVideos }: { userVideos: VideoItem[] }) {
       </div>
 
       {/* Pagination */}
-      {videos.length > STUDIO_PAGE_SIZE && (
-        <div className="mx-4 mt-3 flex items-center justify-between">
+      {total > STUDIO_PAGE_SIZE && (
+        <div className="mx-6 my-3 pb-4 flex items-center justify-between">
           <p className="text-sm">
             Page {page} of {totalPages}
           </p>

@@ -12,8 +12,8 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 hidden lg:block lg:col-span-2 border-r border-black/10 dark:border-white/10">
-      <div className="flex w-full flex-col">
+    <aside className="hidden lg:block lg:col-span-2 border-r border-black/10 dark:border-white/10">
+      <div className="sticky top-16 flex w-full flex-col">
         <div className="flex flex-col gap-2 border-b border-black/10 p-4 py-6 dark:border-white/10">
           <Image
             src={user?.avatarUrl || "/images/dummy.jpg"}

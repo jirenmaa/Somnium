@@ -234,6 +234,24 @@ export const getVideos = withAction(
 );
 
 /**
+ * Fetches the authenticated user's total videos
+ */
+export const getMyVideosCount = withAction(async () => {
+  const session = await requireAuth();
+
+  let whereCondition = eq(video.userId, session!.user.id);
+
+  const total = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(video)
+    .where(whereCondition);
+
+  return {
+    total: Number(total[0].count),
+  };
+});
+
+/**
  * Fetches the authenticated user's videos
  * @param searchQuery Search term
  * @param sortFilter Sort order
@@ -243,7 +261,7 @@ export const getVideos = withAction(
  */
 export const getMyVideos = withAction(
   async (
-    searchQuery: string = "",
+    searchQuery?: string,
     sortFilter?: string,
     pageNumber: number = 1,
     pageSize: number = 8,
@@ -258,7 +276,7 @@ export const getMyVideos = withAction(
     let whereCondition = eq(video.userId, session!.user.id);
 
     // Search
-    if (searchQuery.trim().length > 0) {
+    if (searchQuery && searchQuery.trim().length > 0) {
       const sanitizedQuery = searchQuery.trim().slice(0, 100);
       const search = sql`${video.title} ILIKE ${"%" + sanitizedQuery + "%"}`;
       whereCondition = and(whereCondition, search) || whereCondition;

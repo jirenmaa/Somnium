@@ -1,4 +1,4 @@
-export const STUDIO_PAGE_SIZE = 5;
+export const STUDIO_PAGE_SIZE = 10;
 
 // Maximum number of requests allowed within the defined time window
 export const RATE_LIMIT_MAX_REQUESTS = 5

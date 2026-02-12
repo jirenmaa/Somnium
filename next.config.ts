@@ -7,13 +7,13 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: "snapcast-d383e.b-cdn.net",
+        hostname: "lh3.googleusercontent.com",
         protocol: "https",
         port: "",
         pathname: "/**",
       },
       {
-        hostname: "lh3.googleusercontent.com",
+        hostname: "ik.imagekit.io",
         protocol: "https",
         port: "",
         pathname: "/**",

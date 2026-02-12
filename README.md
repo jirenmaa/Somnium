@@ -1,82 +1,132 @@
 # Full Stack Screen Recording & Video Sharing Platform
 
-A modern full-stack application for recording your screen, uploading videos, generating AI transcripts, and sharing content securely with full privacy control.
+> A modern full-stack, security-focused and production-minded video platform for recording your screen, uploading videos, and sharing content securely with full privacy control.
 
-![Preview](assets/preview.png)
+![preview](/asset/SomniumPreview.png)
 
----
+Checkout the platform 👉 [Somnium.vercel.app](https://somnium-zeta.vercel.app/)
 
-## Features
+## Core Capabilities
 
-| Feature                | Description |
-|------------------------|-------------|
-| Authentication         | Secure user sign-up and sign-in with Better Auth and Google OAuth. |
-| Screen Recording       | Record your screen directly inside the browser with a seamless experience. |
-| Video Uploading        | Upload videos easily with support for public and private visibility. |
-| AI Transcripts         | Generate automatic transcripts for better accessibility and search. |
-| Privacy Control        | Toggle video access between public and private anytime. |
-| Arcjet Security        | Protect the app with bot detection, rate limiting, and attack prevention. |
-| Share Videos           | Share uploaded videos instantly using unique links. |
-| Modern UI/UX           | Minimal, responsive design built with Tailwind CSS. |
-| Database Integration   | Real-time scalable database management powered by Xata. |
-| Type-Safe Queries      | Reliable and secure database queries using Drizzle ORM. |
-| Cross-Device Ready     | Fully responsive experience across desktop, tablet, and mobile. |
+* Secure authentication via Better Auth
+* Server Actions wrapped with a unified `withAction` guard
+* Distributed rate limiting using Upstash Redis
+* Zod-powered validation layer
+* Structured response pattern
+* Role-based and ownership validation
+* Infinite-scroll gallery with paginated queries
+* Environment-driven configuration toggles
+* Clean modular project layout
 
----
 
-## Tech Stack
+### Unified Action Wrapper
 
-| Technology    | Official Website |
-|--------------|----------------|
-| Next.js       | https://nextjs.org/ |
-| TypeScript    | https://www.typescriptlang.org/ |
-| Tailwind CSS   | https://tailwindcss.com/ |
-| Better Auth    | https://www.better-auth.com/ |
-| Bunny.net    | https://bunny.net/ |
-| Xata         | https://xata.io/ |
-| Drizzle ORM   | https://orm.drizzle.team/ |
-| Arcjet       | https://arcjet.com/ |
+All server actions are wrapped with:
 
----
-
-### Clone the repository
-
-```bash
-git clone https://github.com/jirenmaa/Somnium
+```ts
+withAction(fn, options)
 ```
 
-Copy the content `.env.example` file to `.env` in the root directory
+This provides:
+
+* Authentication enforcement
+* Rate limiting
+* Centralized error handling
+* Structured logging
+* Standardized response shape
+
+No duplicated boilerplate.
+No inconsistent error behavior.
+
+### Distributed Rate Limiting
+
+Two enforcement layers:
+
+* **Server Actions** → user/IP throttling
+* **API Routes** → endpoint-level throttling
+
+Powered by:
+
+* [`@upstash/ratelimit`](https://www.npmjs.com/package/@upstash/ratelimit)
+* Redis-backed distributed counters
+
+Production-ready for horizontal scaling.
+
+## 🛠 Tech Stack
+
+| Layer           | Technology               |
+| --------------- | ------------------------ |
+| Framework       | Next.js 16               |
+| Language        | TypeScript               |
+| Styling         | Tailwind CSS             |
+| Database        | PostgreSQL ([supabase](https://supabase.com/)) + Drizzle ORM |
+| Auth            | [Better Auth](https://www.better-auth.com/)              |
+| Rate Limiting   | [Upstash Redis](https://console.upstash.com/)            |
+| Validation      | Zod                      |
+| Image Handling  | [ImageKit](https://imagekit.io/)                 |
+| Package Manager | pnpm                     |
+
+
+## ⚙️ Environment Configuration
+
+Copy the example:
+
+```bash
+cp env.example .env.local
+```
+
+Key variables:
 
 ```env
-# Next.js
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-
-# Xata Configuration
-XATA_API_KEY=
-DATABASE_URL_POSTGRES=
-
-# Google OAuth
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
+DATABASE_URL=postgresql://[YOUR_DATABASE]:[YOUR_PASSWORD]@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres
 
 # Better Auth
 BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
 
-# Bunny.net
-BUNNY_STORAGE_ACCESS_KEY=
-BUNNY_LIBRARY_ID=
-BUNNY_STREAM_ACCESS_KEY=
+# Imagekit
+IMAGEKIT_PUBLIC_KEY=
+IMAGEKIT_PRIVATE_KEY=
 
-# Arcjet
-ARCJET_API_KEY=
+# supabase
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+
+# OAuth
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Upstash
+UPSTASH_REDIS_REST_URL="https://[YOUR-URL].upstash.io"
+UPSTASH_REDIS_REST_TOKEN="[YOUR_TOKEN]"
+# Toggle request rate limiting.
+# "false" → rate limiting enabled (recommended, especially in production)
+# "true"  → rate limiting disabled (use only for local development/testing)
+DISABLE_RATE_LIMIT="true"
 ```
 
+Rate limiting automatically disables in development.
 
-## Install dependencies
+## 🚦 Running Locally
 
 ```bash
-npm install
+pnpm install
+pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the project.
+Production:
+
+```bash
+pnpm build
+pnpm start
+```
+
+## Future Improvements
+
+* S3-compatible storage adapter
+* Background job processing
+* Calculate Views
+
+## License
+
+[MIT](/LICENSE)
